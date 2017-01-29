@@ -1,0 +1,9 @@
+build-essential
+curl
+wget
+watch
+git
+python-setuptools
+ruby
+ruby-full
+brew-linuxwrapper

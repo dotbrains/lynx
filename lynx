@@ -1,0 +1,160 @@
+#!/bin/sh
+
+# Welcome to lynx!
+# Be prepared to turn your linux laptop (or desktop, no haters here)
+# into an awesome development machine.
+
+set -e
+
+# Helper f(x)'s and variable(s)
+
+append_to_zshrc() {
+  local text="$1" zshrc
+  local skip_new_line="${2:-0}"
+
+  if [ -w "$HOME/.zshrc.local" ]; then
+    zshrc="$HOME/.zshrc.local"
+  else
+    zshrc="$HOME/.zshrc"
+  fi
+
+  if ! grep -Fqs "$text" "$zshrc"; then
+    if [ "$skip_new_line" -eq 1 ]; then
+      printf "%s\n" "$text" >> "$zshrc"
+    else
+      printf "\n%s\n" "$text" >> "$zshrc"
+    fi
+  fi
+}
+
+find_latest_ruby() {
+  rbenv install -l | grep -v - | tail -1 | sed -e 's/^ *//'
+}
+
+gem_install_or_update() {
+  if gem list "$1" --installed &> /dev/null; then
+    gem update "$@"
+  else
+    gem install "$@"
+    rbenv rehash
+  fi
+}
+
+#trap
+
+trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
+
+# start of program
+
+echo ""
+
+cat logo.txt
+
+echo ""
+
+# OS pre-check
+
+if ! grep -qiE 'wheezy|jessie|precise|trusty' /etc/os-release; then
+ echo "[!] Sorry! we don't currently support that distro."
+ exit 1
+fi
+
+# initial configuration(s)
+
+echo "[-] Making initial configuration(s) ..."
+
+if [ ! -d "$HOME/.bin/" ]; then
+  mkdir "$HOME/.bin"
+fi
+
+if [ ! -f "$HOME/.zshrc" ]; then
+  touch "$HOME/.zshrc"
+fi
+
+# aptitude
+
+if ! $(which aptitude) &> /dev/null; then
+  sudo apt-get install -y aptitude &> /dev/null
+fi
+
+# maintenance
+
+sudo apt-get update &> /dev/null
+sudo aptitude update &> /dev/null
+sudo apt-get -y upgrade &> /dev/null
+sudo apt-get -y dist-upgrade &> /dev/null
+
+# dependencies
+
+cat packages.txt | xargs sudo apt-get -y install &> /dev/null
+
+# oh-my-zsh
+
+if ! which zsh; then
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+fi
+
+append_to_zshrc 'export PATH="$HOME/.bin:$PATH"'
+
+case "$SHELL" in
+  */zsh) : ;;
+  *)
+    echo "[-] Changing your shell to zsh ..."
+      chsh -s "$(which zsh)"
+    ;;
+esac
+
+# brew
+
+echo "[-] Configuring brew ..."
+
+if ! which brew &> /dev/null; then
+	echo "[-] Installing Linuxbrew ..."
+  yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"
+
+	git clone git://github.com/Linuxbrew/brew.git ~/.linuxbrew &> dev/null
+
+	append_to_zshrc '# recommended by brew doctor'
+
+	append_to_zshrc 'export PATH="$HOME/.linuxbrew/bin:$PATH"' 1
+	append_to_zshrc 'export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"' 1
+	append_to_zshrc 'export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"' 1
+fi
+
+if brew list | grep -Fq brew-cask; then
+  echo "[-] Uninstalling old Linuxbrew-Cask ..."
+  brew uninstall --force brew-cask
+fi
+
+echo "[-] Updating Linuxbrew formulae ..."
+brew update &> /dev/null
+brew bundle --file-path=Brewfile &> /dev/null
+
+# ruby
+
+echo "[-] Configuring Ruby ..."
+
+ruby_version="$(find_latest_ruby)"
+
+append_to_zshrc 'eval "$(rbenv init - --no-rehash)"' 1
+eval "$(rbenv init -)"
+
+if ! rbenv versions | grep -Fq "$ruby_version"; then
+  RUBY_CONFIGURE_OPTS=--with-openssl-dir=/usr/local/opt/openssl rbenv install -s "$ruby_version" &> /dev/null
+fi
+
+rbenv global "$ruby_version" &> /dev/null
+rbenv shell "$ruby_version" &> /dev/null
+gem update --system &> /dev/null
+
+echo "[-] Configuring Bundler for faster, parallel gem installation ..."
+gem_install_or_update 'bundler' &> /dev/null
+number_of_cores=$(nproc)
+bundle config --global jobs $((number_of_cores - 1))
+
+# Cache local configuration(s)
+
+if [ -f "$HOME/.lynx.local" ]; then
+  echo "[-] Running your customizations from ~/.lynx.local ..."
+  . "$HOME/.lynx.local"
+fi
