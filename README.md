@@ -1,4 +1,4 @@
-Lynx
+Lynx (WIP)
 ======
 
 Lynx is a script to set up an Linux laptop for web development.
