@@ -161,9 +161,9 @@ if ! which brew &> /dev/null; then
 	append_to_zshrc '# recommended by brew doctor'
 
   # shellcheck disable=SC2016
-	append_to_zshrc "export PATH='"$HOME"/.linuxbrew/bin:"$PATH"'" 1
-	append_to_zshrc "export MANPATH='"$HOME"/.linuxbrew/share/man:"$MANPATH"" 1
-	append_to_zshrc "export INFOPATH='"$HOME"/.linuxbrew/share/info:"$INFOPATH"'" 1
+	append_to_zshrc "export PATH="$HOME"/.linuxbrew/bin:"$PATH"" 1
+	append_to_zshrc "export MANPATH="$HOME"/.linuxbrew/share/man:"$MANPATH"" 1
+	append_to_zshrc "export INFOPATH="$HOME"/.linuxbrew/share/info:"$INFOPATH"" 1
 fi
 
 if brew list | grep -Fq brew-cask; then
