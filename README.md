@@ -2,8 +2,8 @@ Lynx
 ======
 
 ![Build Status](https://travis-ci.org/NicholasAdamou/Lynx.svg?branch=master)
-![license](https://img.shields.io/apm/l/vim-mode.svg)
-[![Say Thanks](https://img.shields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/NicholasAdamou)
+![license](https://img.bashields.io/apm/l/vim-mode.svg)
+[![Say Thanks](https://img.bashields.io/badge/say-thanks-ff69b4.svg)](https://saythanks.io/to/NicholasAdamou)
 
 Lynx is a script to set up a Linux laptop for web development.
 
@@ -27,25 +27,25 @@ Install
 Download the script:
 
 ```
-sh
+bash
 curl --remote-name https://raw.githubusercontent.com/nicholasadamou/Lynx/master/lynx
 ```
 
 Review the script (avoid running scripts you haven't read!):
 
-```sh
+```bash
 less lynx
 ```
 
 Execute the downloaded script:
 
-```sh
-sh lynx 2>&1 | tee ~/lynx.log
+```bash
+bash lynx 2>&1 | tee ~/lynx.log
 ```
 
 Optionally, review the log:
 
-```sh
+```bash
 less ~/lynx.log
 ```
 
@@ -70,7 +70,7 @@ Linux tools:
 
 * [Linuxbrew] for managing operating system libraries.
 
-[Linuxbrew]: http://linuxbrew.sh/
+[Linuxbrew]: http://linuxbrew.bash/
 
 Unix tools:
 
@@ -81,7 +81,7 @@ Unix tools:
 * [The Silver Searcher] for finding things in files
 * [Tmux] for saving project state and switching between projects
 * [Watchman] for watching for filesystem events
-* [Zsh] as your shell
+* [Zbash] as your bashell
 
 [Exuberant Ctags]: http://ctags.sourceforge.net/
 [Git]: https://git-scm.com/
@@ -90,7 +90,7 @@ Unix tools:
 [The Silver Searcher]: https://github.com/ggreer/the_silver_searcher
 [Tmux]: http://tmux.github.io/
 [Watchman]: https://facebook.github.io/watchman/
-[Zsh]: http://www.zsh.org/
+[Zbash]: http://www.zbash.org/
 
 Heroku tools:
 
@@ -140,7 +140,7 @@ Databases:
 [Postgres]: http://www.postgresql.org/
 [Redis]: http://redis.io/
 
-It should take less than 15 minutes to install (depends on your machine).
+It bashould take less than 15 minutes to install (depends on your machine).
 
 Customize in `~/.lynx.local`
 ------------------------------
@@ -149,8 +149,8 @@ Your `~/.lynx.local` is run at the end of the Lynx script.
 Put your customizations there.
 For example:
 
-```sh
-#!/bin/sh
+```bash
+#!/bin/bash
 
 brew bundle --file=- <<EOF
 brew "Caskroom/cask/dockertoolbox"
