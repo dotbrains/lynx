@@ -128,6 +128,7 @@ export DEBIAN_FRONTEND=\"noninteractive\" \
 
 # dependencies
 
+# shellcheck disable=SC2002
 cat packages.txt | xargs sudo apt-get -y install &> /dev/null
 
 # oh-my-zsh
@@ -136,7 +137,7 @@ if ! which zsh; then
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
 
-append_to_zshrc 'export PATH="$HOME/.bin:$PATH"'
+append_to_zshrc "export PATH=""$HOME"/.bin:"$PATH"""
 
 case "$SHELL" in
   */zsh) : ;;
@@ -159,9 +160,9 @@ if ! which brew &> /dev/null; then
 	append_to_zshrc '# recommended by brew doctor'
 
   # shellcheck disable=SC2016
-	append_to_zshrc 'export PATH="$HOME/.linuxbrew/bin:$PATH"' 1
-	append_to_zshrc 'export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"' 1
-	append_to_zshrc 'export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"' 1
+	append_to_zshrc "export PATH='"$HOME"/.linuxbrew/bin:"$PATH"'" 1
+	append_to_zshrc "export MANPATH='"$HOME"/.linuxbrew/share/man:"$MANPATH"" 1
+	append_to_zshrc "export INFOPATH='"$HOME"/.linuxbrew/share/info:"$INFOPATH"'" 1
 fi
 
 if brew list | grep -Fq brew-cask; then
