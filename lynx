@@ -1,8 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
+#   __
+#  / /_   _ _ __ __  __
+# / / | | | | '_ \\ \/ /
+#/ /__| |_| | | | |>  <
+#\____/\__, |_| |_/_/\_\
+#      |___/ v0.1
 # Welcome to lynx!
 # Be prepared to turn your linux laptop (or desktop, no haters here)
 # into an awesome development machine.
+
+#trap
+
+trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
 
 set -e
 
@@ -27,36 +37,64 @@ append_to_zshrc() {
   fi
 }
 
-find_latest_ruby() {
-  rbenv install -l | grep -v - | tail -1 | sed -e 's/^ *//'
-}
-
 gem_install_or_update() {
-  if gem list "$1" --installed &> /dev/null; then
+  if gem list "$1" --installed > /dev/null; then
     gem update "$@"
   else
     gem install "$@"
-    rbenv rehash
   fi
 }
 
-#trap
+install_asdf_language() {
+  local language="$1"
+  local version
+  version="$(asdf list-all "$language" | tail -1)"
 
-trap 'ret=$?; test $ret -ne 0 && printf "failed\n\n" >&2; exit $ret' EXIT
+  if ! asdf list "$language" | grep -Fq "$version"; then
+    asdf install "$language" "$version"
+    asdf global "$language" "$version"
+  fi
+}
+
+install_asdf_plugin() {
+  local name="$1"
+  local url="$2"
+
+  if ! asdf plugin-list | grep -Fq "$name"; then
+    asdf plugin-add "$name" "$url"
+  fi
+}
 
 # start of program
 
 echo ""
 
-cat logo.txt
+sleep 0.2 && echo "   __"
+sleep 0.2 && echo "  / /_   _ _ __ __  __"
+sleep 0.2 && echo " / / | | | | '_ \\ \/ /"
+sleep 0.2 && echo "/ /__| |_| | | | |>  <"
+sleep 0.2 && echo "\____/\__, |_| |_/_/\_\\"
+sleep 0.2 && echo "      |___/ v0.1"
+
+echo ""
+sleep 0.1
+echo "Made with <3 by: Nicholas Adamou (4d4m0u)"
+sleep 0.1
+echo "Turn your linux laptop (or desktop, no haters here) into"
+echo "an awesome development machine. (Lynx)"
+sleep 0.1
 
 echo ""
 
 # OS pre-check
 
-if ! grep -qiE 'wheezy|jessie|precise|trusty' /etc/os-release; then
- echo "[!] Sorry! we don't currently support that distro."
- exit 1
+os=""
+kernelName="$(uname -s)"
+if [ "$kernelName" == "Linux" ] && [ -e "/etc/lsb-release" ]; then
+        if ! [ "$(cat < '/etc/lsb-release' | grep DISTRIB_ID | grep -o Ubuntu)" == "Ubuntu" ]; then
+           echo "[!] Sorry! we don't currently support this linux distro."
+           exit 1
+        fi
 fi
 
 # initial configuration(s)
@@ -71,18 +109,23 @@ if [ ! -f "$HOME/.zshrc" ]; then
   touch "$HOME/.zshrc"
 fi
 
-# aptitude
+HOMEBREW_PREFIX="/usr/local"
 
-if ! $(which aptitude) &> /dev/null; then
-  sudo apt-get install -y aptitude &> /dev/null
+if [ -d "$HOMEBREW_PREFIX" ]; then
+  if ! [ -r "$HOMEBREW_PREFIX" ]; then
+    sudo chown -R "$LOGNAME:admin" /usr/local
+  fi
+else
+  sudo mkdir "$HOMEBREW_PREFIX"
+  sudo chflags norestricted "$HOMEBREW_PREFIX"
+  sudo chown -R "$LOGNAME:admin" "$HOMEBREW_PREFIX"
 fi
 
 # maintenance
 
-sudo apt-get update &> /dev/null
-sudo aptitude update &> /dev/null
-sudo apt-get -y upgrade &> /dev/null
-sudo apt-get -y dist-upgrade &> /dev/null
+sudo apt-get update -qqy
+export DEBIAN_FRONTEND=\"noninteractive\" \
+      && sudo apt-get -o Dpkg::Options::=\"--force-confnew\" upgrade -qqy
 
 # dependencies
 
@@ -116,6 +159,7 @@ if ! which brew &> /dev/null; then
 
 	append_to_zshrc '# recommended by brew doctor'
 
+  # shellcheck disable=SC2016
 	append_to_zshrc 'export PATH="$HOME/.linuxbrew/bin:$PATH"' 1
 	append_to_zshrc 'export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"' 1
 	append_to_zshrc 'export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"' 1
@@ -127,34 +171,75 @@ if brew list | grep -Fq brew-cask; then
 fi
 
 echo "[-] Updating Linuxbrew formulae ..."
-brew update &> /dev/null
-brew bundle --file-path=Brewfile &> /dev/null
+brew update --force # https://github.com/Homebrew/brew/issues/1151
+brew bundle --file=- <<EOF
+tap "thoughtbot/formulae"
+tap "homebrew/services"
+tap "universal-ctags/universal-ctags"
+tap "caskroom/cask"
+
+# Unix
+brew "universal-ctags", args: ["HEAD"]
+brew "git"
+brew "openssl"
+brew "rcm"
+brew "reattach-to-user-namespace"
+brew "the_silver_searcher"
+brew "tmux"
+brew "vim"
+brew "watchman"
+brew "zsh"
+
+# Heroku
+brew "heroku"
+brew "parity"
+
+# GitHub
+brew "hub"
+
+# Image manipulation
+brew "imagemagick"
+
+# Testing
+brew "qt@5.5" if MacOS::Xcode.installed?
+
+# Programming language prerequisites and package managers
+brew "libyaml" # should come after openssl
+brew "coreutils"
+brew "yarn"
+cask "gpgtools"
+
+# Databases
+brew "postgres", restart_service: :changed
+brew "redis", restart_service: :changed
+EOF
+
+# asdf version manager
+
+echo "[-] Configuring asdf version manager..."
+if [ ! -d "$HOME/.asdf" ]; then
+  git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.3.0
+  append_to_zshrc "source $HOME/.asdf/asdf.sh" 1
+fi
+
+# shellcheck disable=SC1090
+source "$HOME/.asdf/asdf.sh"
+install_asdf_plugin "ruby" "https://github.com/asdf-vm/asdf-ruby.git"
+install_asdf_plugin "nodejs" "https://github.com/asdf-vm/asdf-nodejs.git"
 
 # ruby
 
-echo "[-] Configuring Ruby ..."
-
-ruby_version="$(find_latest_ruby)"
-
-append_to_zshrc 'eval "$(rbenv init - --no-rehash)"' 1
-eval "$(rbenv init -)"
-
-if ! rbenv versions | grep -Fq "$ruby_version"; then
-  RUBY_CONFIGURE_OPTS=--with-openssl-dir=/usr/local/opt/openssl rbenv install -s "$ruby_version" &> /dev/null
-fi
-
-rbenv global "$ruby_version" &> /dev/null
-rbenv shell "$ruby_version" &> /dev/null
-gem update --system &> /dev/null
-
-echo "[-] Configuring Bundler for faster, parallel gem installation ..."
-gem_install_or_update 'bundler' &> /dev/null
-number_of_cores=$(nproc)
+echo "[-] Installing latest Ruby..."
+install_asdf_language "ruby"
+gem update --system
+gem_install_or_update "bundler"
+number_of_cores=$(sysctl -n hw.ncpu)
 bundle config --global jobs $((number_of_cores - 1))
 
 # Cache local configuration(s)
 
 if [ -f "$HOME/.lynx.local" ]; then
   echo "[-] Running your customizations from ~/.lynx.local ..."
+  # shellcheck disable=SC1090
   . "$HOME/.lynx.local"
 fi
