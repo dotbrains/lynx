@@ -81,7 +81,7 @@ Unix tools:
 * [The Silver Searcher] for finding things in files
 * [Tmux] for saving project state and switching between projects
 * [Watchman] for watching for filesystem events
-* [zsh] as your bash shell
+* [zsh] as your shell
 
 [Exuberant Ctags]: http://ctags.sourceforge.net/
 [Git]: https://git-scm.com/
