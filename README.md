@@ -81,7 +81,7 @@ Unix tools:
 * [The Silver Searcher] for finding things in files
 * [Tmux] for saving project state and switching between projects
 * [Watchman] for watching for filesystem events
-* [Zbash] as your bashell
+* [zsh] as your bash shell
 
 [Exuberant Ctags]: http://ctags.sourceforge.net/
 [Git]: https://git-scm.com/
@@ -90,7 +90,7 @@ Unix tools:
 [The Silver Searcher]: https://github.com/ggreer/the_silver_searcher
 [Tmux]: http://tmux.github.io/
 [Watchman]: https://facebook.github.io/watchman/
-[Zbash]: http://www.zbash.org/
+[zsh]: http://www.zsh.org/
 
 Heroku tools:
 
