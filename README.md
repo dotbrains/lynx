@@ -1,10 +1,6 @@
 Lynx [![Build Status](https://travis-ci.org/nicholasadamou/Lynx.svg?branch=master)](https://travis-ci.org/nicholasadamou/Lynx)
 ======
 
-<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/9xfHBCXLLneQfkK8qiHeHcLd/nicholasadamou/Lynx'>
-  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/9xfHBCXLLneQfkK8qiHeHcLd/nicholasadamou/Lynx.svg' />
-</a>
-
 Lynx is a script to set up a Linux laptop for web development.
 
 It can be run multiple times on the same machine safely.
