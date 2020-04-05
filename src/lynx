@@ -92,8 +92,8 @@ echo ""
 kernelName="$(uname -s)"
 if [ "$kernelName" == "Linux" ] && [ -e "/etc/lsb-release" ]; then
         if ! [ "$(cat < '/etc/lsb-release' | grep DISTRIB_ID | grep -o Ubuntu)" == "Ubuntu" ]; then
-           echo "[!] Sorry! we don't currently support this linux distro."
-           exit 1
+					echo "[!] Sorry! we don't currently support this linux distro."
+					exit 1
         fi
 fi
 
@@ -134,7 +134,7 @@ cat packages.txt | xargs sudo apt-get -y install &> /dev/null
 
 # oh-my-zsh
 
-if ! which zsh; then
+if ! command -v zsh &> /dev/null; then
 	sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
 
@@ -144,7 +144,7 @@ case "$SHELL" in
   */zsh) : ;;
   *)
     echo "[-] Changing your shell to zsh ..."
-      chsh -s "$(which zsh)"
+      chsh -s "$(command -v zsh)"
     ;;
 esac
 
@@ -152,7 +152,7 @@ esac
 
 echo "[-] Configuring brew ..."
 
-if ! which brew &> /dev/null; then
+if ! command -v brew &> /dev/null; then
 	echo "[-] Installing Linuxbrew ..."
   yes | ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"
 

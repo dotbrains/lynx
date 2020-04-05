@@ -24,9 +24,8 @@ Install
 
 Download the script:
 
-```
-bash
-curl --remote-name https://raw.githubusercontent.com/nicholasadamou/Lynx/master/lynx
+```bash
+curl --remote-name https://raw.githubusercontent.com/nicholasadamou/Lynx/master/src/lynx
 ```
 
 Review the script (avoid running scripts you haven't read!):
@@ -196,7 +195,7 @@ Inspiration
 License
 -------
 
-Lynx is © 2018 Nicholas Adamou.
+Lynx is © 2020 Nicholas Adamou.
 
 It is free software, and may be redistributed under the terms specified in the [LICENSE] file.
 
