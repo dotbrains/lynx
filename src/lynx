@@ -130,7 +130,7 @@ export DEBIAN_FRONTEND=\"noninteractive\" \
 # dependencies
 
 # shellcheck disable=SC2002
-cat packages.txt | xargs sudo apt-get -y install &> /dev/null
+cat packages | xargs sudo apt-get -y install &> /dev/null
 
 # oh-my-zsh
 
