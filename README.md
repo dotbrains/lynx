@@ -195,7 +195,7 @@ Inspiration
 License
 -------
 
-Lynx is © 2020 Nicholas Adamou.
+Lynx is © Nicholas Adamou.
 
 It is free software, and may be redistributed under the terms specified in the [LICENSE] file.
 
