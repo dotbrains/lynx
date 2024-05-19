@@ -1,4 +1,4 @@
-Lynx [![Build Status](https://travis-ci.org/nicholasadamou/Lynx.svg?branch=master)](https://travis-ci.org/nicholasadamou/Lynx)
+Lynx
 ======
 
 Lynx is a script to set up a Linux laptop for web development.
