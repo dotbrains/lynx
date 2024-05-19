@@ -7,7 +7,7 @@ It can be run multiple times on the same machine safely.
 It installs, upgrades, or skips packages
 based on what is already installed on the machine.
 
-[Requirements](https://github.com/nicholasadamou/Lynx/blob/master/README.md#requirements) / [Install](https://github.com/nicholasadamou/Lynx/blob/master/README.md#install) / [Debugging](https://github.com/nicholasadamou/Lynx/blob/master/README.md#debugging) / [What it sets up](https://github.com/nicholasadamou/Lynx/blob/master/README.md#what-it-sets-up) / [Customize in ~/.lynx.local](https://github.com/nicholasadamou/Lynx/blob/master/README.md#customize-in-lynxlocal) / [Inspiration](https://github.com/nicholasadamou/Lynx/blob/master/README.md#inspiration) / [License](https://github.com/nicholasadamou/Lynx/blob/master/README.md#license)
+[Requirements](https://github.com/dotbrains/Lynx/blob/master/README.md#requirements) / [Install](https://github.com/dotbrains/Lynx/blob/master/README.md#install) / [Debugging](https://github.com/dotbrains/Lynx/blob/master/README.md#debugging) / [What it sets up](https://github.com/dotbrains/Lynx/blob/master/README.md#what-it-sets-up) / [Customize in ~/.lynx.local](https://github.com/dotbrains/Lynx/blob/master/README.md#customize-in-lynxlocal) / [Inspiration](https://github.com/dotbrains/Lynx/blob/master/README.md#inspiration) / [License](https://github.com/dotbrains/Lynx/blob/master/README.md#license)
 
 Requirements
 ------------
@@ -25,7 +25,7 @@ Install
 Download the script:
 
 ```bash
-curl --remote-name https://raw.githubusercontent.com/nicholasadamou/Lynx/master/src/lynx
+curl --remote-name https://raw.githubusercontent.com/dotbrains/Lynx/master/src/lynx
 ```
 
 Review the script (avoid running scripts you haven't read!):
@@ -47,9 +47,9 @@ less ~/lynx.log
 ```
 
 
-Optionally, [install nicholasadamou/dotfiles][dotfiles].
+Optionally, [install dotbrains/dotfiles][dotfiles].
 
-[dotfiles]: https://github.com/nicholasadamou/dotfiles#Setup
+[dotfiles]: https://github.com/dotbrains/dotfiles#Setup
 
 Debugging
 ---------
@@ -57,7 +57,7 @@ Debugging
 Your last Lynx run will be saved to `~/lynx.log`.
 Read through it to see if you can debug the issue yourself.
 If not, copy the lines where the script failed into a
-[new GitHub Issue](https://github.com/nicholasadamou/Lynx/issues/new) for me.
+[new GitHub Issue](https://github.com/dotbrains/Lynx/issues/new) for me.
 Or, attach the whole log file as an attachment.
 
 What it sets up
