@@ -46,11 +46,6 @@ Optionally, review the log:
 less ~/lynx.log
 ```
 
-
-Optionally, [install dotbrains/dotfiles][dotfiles].
-
-[dotfiles]: https://github.com/dotbrains/dotfiles#Setup
-
 Debugging
 ---------
 
